@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-primary: #2563eb;
+  --color-secondary: #60a5fa;
+}
+
+@layer base {
+  :root:not(.dark) [class*="text-blue-"] {
+    color: #000 !important;
+  }
+
+  body {
+    @apply bg-white text-slate-800 antialiased selection:bg-primary/10 selection:text-primary transition-colors duration-300;
+    @media (min-width: 768px) {
+      cursor: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    a, button, input, textarea, select {
+      cursor: none;
+    }
+  }
+  
+  .dark body {
+    @apply bg-slate-950 text-slate-200;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-semibold tracking-tight text-slate-900 transition-colors duration-300;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-white;
+  }
+}
+
+.glass {
+  @apply bg-white/70 backdrop-blur-sm border border-slate-200/60 shadow-sm transition-all duration-300;
+}
+
+.dark .glass {
+  @apply bg-slate-900/40 border-white/5 shadow-none;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-cursor-ring {
+  mix-blend-mode: difference;
+}
+
+.dark .custom-cursor-ring {
+  mix-blend-mode: normal;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.55), 0 0 18px rgba(255, 255, 255, 0.35);
+}
+
+.dark .custom-cursor-dot {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.9), 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.custom-cursor-hover-ring {
+  border: 2px solid rgba(37, 99, 235, 0.45);
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+.dark .custom-cursor-hover-ring {
+  border-color: rgba(255, 255, 255, 0.82);
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.45), 0 0 20px rgba(255, 255, 255, 0.28);
+}
+
+.dark .custom-cursor-glow {
+  background-color: rgba(147, 197, 253, 0.2) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor-ring,
+  .custom-cursor-hover-ring,
+  .custom-cursor-dot,
+  .custom-cursor-glow {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-shell {
+    row-gap: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-section .glass {
+    backdrop-filter: blur(6px);
+  }
+}
