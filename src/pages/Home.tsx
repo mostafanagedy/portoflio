@@ -1,226 +1,327 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { 
-  Github, 
-  Linkedin, 
-  Twitter, 
-  ChevronRight, 
-  Award,
-  Briefcase,
-  Code2,
-  Coffee
+import {
+  Github,
+  ArrowRight,
+  Globe,
+  Mail,
+  Download,
+  MapPin,
+  Circle,
 } from 'lucide-react';
 import { Skeleton } from '../components/Skeleton';
-
-const DYNAMIC_WORDS = [
-  "Precision.",
-  "Passion.",
-  "Innovation.",
-  "Creativity.",
-  "Excellence.",
-  "Scalability."
-];
-
+import { CERTIFICATES, PROJECTS } from '../data';
 import { Recommendations } from '../components/Recommendations';
 
+const ROLES = [
+  'Frontend Developer',
+  'React Specialist',
+  'UI Engineer',
+  'TypeScript Developer',
+];
+
+const STATS = [
+  { value: PROJECTS.length + '+', label: 'Projects Shipped' },
+  { value: CERTIFICATES.length + '+', label: 'Certifications' },
+  { value: '2+', label: 'Years Building' },
+];
+
 export const Home = () => {
-  const [wordIndex, setWordIndex] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [roleIndex, setRoleIndex] = useState(0);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const containerRef = useRef<HTMLElement>(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 34, damping: 34 });
+  const springY = useSpring(mouseY, { stiffness: 34, damping: 34 });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % DYNAMIC_WORDS.length);
-    }, 3000);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+      setRoleIndex((prev) => (prev + 1) % ROLES.length);
+    }, 2800);
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      mouseX.set(x * 14);
+      mouseY.set(y * 14);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
 
   return (
     <>
-      <section className="hero-section relative min-h-[calc(100svh-72px)] md:min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
-        {/* Dynamic Background Elements */}
-        <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden">
-          <motion.div 
-            className="absolute top-1/4 -left-16 md:-left-20 w-64 h-64 md:w-[400px] md:h-[400px] bg-primary/5 rounded-full blur-[80px] md:blur-[100px]"
-            animate={{
-              x: mousePosition.x / 40,
-              y: mousePosition.y / 40,
-            }}
-            transition={{ type: 'spring', damping: 50, stiffness: 200 }}
-          />
-          <motion.div 
-            className="absolute bottom-1/4 -right-16 md:-right-20 w-64 h-64 md:w-[400px] md:h-[400px] bg-secondary/5 rounded-full blur-[80px] md:blur-[100px]"
-            animate={{
-              x: -mousePosition.x / 40,
-              y: -mousePosition.y / 40,
-            }}
-            transition={{ type: 'spring', damping: 50, stiffness: 200 }}
-          />
-        </div>
+      <section
+        ref={containerRef}
+        className="relative min-h-[calc(100svh-72px)] md:min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden"
+      >
+        {/* Subtle Grid Background */}
+        <div
+          className="absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.06]"
+          style={{
+            backgroundImage: `linear-gradient(#2563eb 1px, transparent 1px), linear-gradient(90deg, #2563eb 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
 
-        <div className="hero-shell max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-0 grid grid-cols-1 min-[390px]:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:grid-cols-2 gap-6 sm:gap-10 lg:gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 rounded-full glass mb-5 sm:mb-6">
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.14em] sm:tracking-widest text-primary">Available for new opportunities</span>
-            </div>
-            <h1 className="hero-title text-[2rem] leading-[1.1] sm:text-5xl md:text-7xl font-semibold mb-5 sm:mb-6 min-h-[2.6em] md:min-h-[auto] text-blue-950 dark:text-white">
-              Crafting <span className="text-primary">Digital</span> <br />
-              Experiences with <br />
-              <div className="relative inline-block h-[1.1em] sm:h-[1.2em] overflow-hidden align-bottom">
-                <AnimatePresence mode="wait">
+        {/* Ambient Glow — mouse-tracked */}
+        <motion.div
+          className="absolute -z-10 hidden h-[420px] w-[420px] rounded-full bg-primary/[0.035] blur-[96px] pointer-events-none md:block"
+          style={{ x: springX, y: springY, left: '36%', top: '24%' }}
+        />
+
+        <motion.div
+          className="absolute -z-10 hidden h-[220px] w-[220px] rounded-full bg-slate-950/[0.04] blur-[70px] pointer-events-none dark:bg-white/[0.04] md:block"
+          style={{ x: springX, y: springY, left: '54%', top: '48%' }}
+        />
+
+        {/* Top-right accent */}
+        <div className="absolute top-0 right-0 w-px h-40 bg-gradient-to-b from-transparent via-primary/40 to-transparent hidden md:block" />
+        <div className="absolute top-0 right-0 w-40 h-px bg-gradient-to-l from-transparent via-primary/40 to-transparent hidden md:block" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-12 md:py-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* ── Left Column ── */}
+            <div className="flex flex-col">
+
+              {/* Status Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center gap-2.5 mb-8 w-fit"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 tracking-widest uppercase">
+                  Available for work
+                </span>
+              </motion.div>
+
+              {/* Name */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-sm font-semibold text-primary tracking-[0.2em] uppercase mb-3"
+              >
+                Mostafa Nagedy
+              </motion.p>
+
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.5rem] font-bold leading-[1.05] tracking-tight text-slate-950 dark:text-white mb-4"
+              >
+                Building{' '}
+                <span className="relative inline-block">
+                  <span className="text-primary">digital</span>
                   <motion.span
-                    key={DYNAMIC_WORDS[wordIndex]}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="inline-block text-primary"
-                  >
-                    {DYNAMIC_WORDS[wordIndex]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </h1>
-            <p className="text-[15px] sm:text-lg text-blue-700/80 dark:text-slate-400 mb-7 sm:mb-8 max-w-lg leading-relaxed">
-              I'm a Full-Stack Developer specializing in building exceptional digital products that combine robust engineering with elegant design.
-            </p>
-            <div className="flex flex-wrap gap-2.5 sm:gap-4">
-              <Link 
-                to="/projects"
-                data-magnetic="true"
-                className="w-auto justify-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all flex items-center gap-2"
-              >
-                View My Work <ChevronRight className="w-4 h-4" />
-              </Link>
-              <Link 
-                to="/certificates"
-                data-magnetic="true"
-                className="w-auto justify-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl border border-slate-200 dark:border-white/10 font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-all flex items-center gap-2 text-blue-900 dark:text-white"
-              >
-                Certificates <Award className="w-4 h-4" />
-              </Link>
-              <a 
-                href="https://www.buymeacoffee.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                data-magnetic="true"
-                className="w-auto justify-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all flex items-center gap-2"
-              >
-                <Coffee className="w-4 h-4" /> Buy me a coffee
-              </a>
-            </div>
-            
-            <div className="mt-9 sm:mt-12 flex items-center gap-3 sm:gap-6">
-              {[Github, Linkedin, Twitter].map((Icon, i) => (
-                <a key={i} href="#" className="p-2.5 sm:p-3 rounded-xl glass hover:text-primary transition-all">
-                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                </a>
-              ))}
-            </div>
-          </motion.div>
+                    className="absolute -bottom-1 left-0 h-px bg-primary/50 block"
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                  />
+                </span>
+                <br />
+                products that
+                <br />
+                <span className="text-slate-400 dark:text-slate-500">actually work.</span>
+              </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1,
-              y: [0, -20, 0] 
-            }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.2,
-              y: {
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
-            }}
-            className="relative flex justify-center min-[390px]:justify-end md:justify-center items-center"
-          >
-            <div className="relative z-10 w-44 h-44 min-[390px]:w-48 min-[390px]:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border border-slate-200/70 dark:border-white/15 shadow-[0_10px_30px_rgba(15,23,42,0.14)] dark:shadow-[0_10px_30px_rgba(2,6,23,0.5)] group">
-              {!isProfileLoaded && (
-                <Skeleton className="absolute inset-0 w-full h-full z-10" variant="circle" />
-              )}
-              <img
-                src="/profile-home.png"
-                alt="Mostafa Nagedy profile"
-                onLoad={() => setIsProfileLoaded(true)}
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                width={640}
-                height={640}
-                sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, 320px"
-                className={`w-full h-full object-cover object-[50%_30%] contrast-[1.04] saturate-[1.06] dark:brightness-[0.98] transition-all duration-700 group-hover:scale-105 ${isProfileLoaded ? 'opacity-100' : 'opacity-0'}`}
+              {/* Animated Role */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <div className="h-px w-8 bg-primary/60" />
+                <div className="h-6 overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={ROLES[roleIndex]}
+                      initial={{ y: 24, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -24, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeInOut' }}
+                      className="block text-sm font-semibold text-slate-600 dark:text-slate-400 tracking-wide"
+                    >
+                      {ROLES[roleIndex]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.45 }}
+                className="text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mb-10"
+              >
+                I build React frontends, e-commerce interfaces, and practical
+                Express/Mongo APIs with a strong focus on responsive UI and
+                clean implementation.
+              </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.55 }}
+                className="flex flex-wrap gap-3 mb-10"
+              >
+                <Link
+                  to="/projects"
+                  data-magnetic="true"
+                  className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  View Projects
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/contact"
+                  data-magnetic="true"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-300 dark:border-white/15 text-slate-800 dark:text-white text-sm font-semibold hover:border-primary/50 hover:text-primary dark:hover:border-primary/50 dark:hover:text-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  Get in Touch
+                </Link>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.65 }}
+                className="h-px bg-slate-200 dark:bg-white/8 mb-8 origin-left"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/8 via-transparent to-white/20 dark:to-white/10 pointer-events-none" />
+
+              {/* Social + Location */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="flex items-center gap-5"
+              >
+                <a
+                  href="https://github.com/mostafanagedy"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="GitHub"
+                  className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://mostafacodes.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Website"
+                  className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
+                  <Globe className="w-5 h-5" />
+                </a>
+                <div className="h-4 w-px bg-slate-300 dark:bg-white/10" />
+                <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500">
+                  <MapPin className="w-3.5 h-3.5" />
+                  Egypt
+                </span>
+              </motion.div>
             </div>
-            
-            {/* Decorative Rings */}
-            <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[110%] h-[110%] border border-dashed border-primary/30 rounded-full -z-10"
-            />
-            <motion.div 
-              animate={{ rotate: -360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[120%] h-[120%] border border-dashed border-secondary/20 rounded-full -z-10"
-            />
-            
-            {/* Floating Stats */}
-            <motion.div 
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -top-4 -right-4 glass p-4 rounded-2xl shadow-xl z-20 hidden lg:block"
+
+            {/* ── Right Column ── */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="relative flex flex-col items-center gap-8 mt-4 md:mt-0"
             >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg">
-                  <Briefcase className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs text-blue-500 dark:text-slate-400">Experience</p>
-                  <p className="text-sm font-bold text-blue-900 dark:text-white">5+ Years</p>
+              {/* Profile Image — clean card */}
+              <div className="relative w-full max-w-[340px] mx-auto">
+                {/* Thin border frame */}
+                <div className="absolute -inset-3 rounded-2xl border border-primary/15 hidden md:block" />
+                <div className="absolute -inset-6 rounded-3xl border border-primary/8 hidden md:block" />
+
+                <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 aspect-[4/5] shadow-[0_24px_80px_rgba(15,23,42,0.18)] dark:shadow-[0_24px_80px_rgba(2,6,23,0.6)]">
+                  {!isProfileLoaded && (
+                    <Skeleton className="absolute inset-0 w-full h-full z-10" />
+                  )}
+                  <img
+                    src="/profile-home.png"
+                    alt="Mostafa Nagedy"
+                    onLoad={() => setIsProfileLoaded(true)}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    width={640}
+                    height={800}
+                    className={`w-full h-full object-cover object-[50%_20%] transition-opacity duration-700 ${isProfileLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  />
+                  {/* Subtle gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent pointer-events-none" />
+
+                  {/* Location tag — bottom left */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 }}
+                    className="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950/70 backdrop-blur-md border border-white/10"
+                  >
+                    <Circle className="w-2 h-2 fill-emerald-400 text-emerald-400" />
+                    <span className="text-xs font-medium text-white">Open to work</span>
+                  </motion.div>
                 </div>
               </div>
+
+              {/* Stats Row */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.75 }}
+                className="w-full max-w-[340px] grid grid-cols-3 divide-x divide-slate-200 dark:divide-white/8 border border-slate-200 dark:border-white/8 rounded-xl overflow-hidden bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm"
+              >
+                {STATS.map((stat, i) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 + i * 0.1 }}
+                    className="flex flex-col items-center py-4 px-2"
+                  >
+                    <span className="text-xl font-bold text-slate-950 dark:text-white tabular-nums">
+                      {stat.value}
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-500 text-center leading-tight mt-0.5">
+                      {stat.label}
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
 
-            <motion.div 
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 5, repeat: Infinity, delay: 1 }}
-              className="absolute -bottom-4 -left-4 glass p-4 rounded-2xl shadow-xl z-20 hidden lg:block"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-secondary/20 rounded-lg">
-                  <Code2 className="w-5 h-5 text-secondary" />
-                </div>
-                <div>
-                  <p className="text-xs text-blue-500 dark:text-slate-400">Projects</p>
-                  <p className="text-sm font-bold text-blue-900 dark:text-white">50+ Completed</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-slate-950 to-transparent pointer-events-none" />
       </section>
 
       <Recommendations />
     </>
   );
 };
-
-
