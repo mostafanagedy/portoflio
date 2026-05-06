@@ -33,28 +33,28 @@ export interface Experience {
 
 export const PROJECTS: Project[] = [
   {
-    title: "Quantum Analytics Platform",
-    description: "A real-time data visualization dashboard for quantum computing simulations, built with React, Three.js, and WebAssembly.",
-    tags: ["React", "Three.js", "WASM", "Tailwind"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/quantum/800/600"
+    title: "Quiz Time Project",
+    description: "Interactive quiz game with configurable rounds, randomized questions, and instant feedback—built for a smooth, engaging knowledge challenge experience.",
+    tags: ["HTML", "CSS", "JavaScript"],
+    link: "https://mostafanagedy.github.io/Quiz_time_project/",
+    github: "https://github.com/mostafanagedy/Quiz_time_project",
+    image: "https://opengraph.githubassets.com/1/mostafanagedy/Quiz_time_project"
   },
   {
-    title: "Neural Mesh Network",
-    description: "Decentralized AI training infrastructure leveraging edge computing nodes. Implemented custom P2P protocols for weight distribution.",
-    tags: ["Node.js", "WebRTC", "TensorFlow", "Rust"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/neural/800/600"
+    title: "Mostafa Nagedy Portfolio",
+    description: "Professional developer portfolio showcasing projects, skills, and contact information.",
+    tags: ["React", "TypeScript", "Vite"],
+    link: "https://it-s-my.vercel.app",
+    github: "https://github.com/mostafanagedy/it-s-my",
+    image: "https://opengraph.githubassets.com/1/mostafanagedy/it-s-my"
   },
   {
-    title: "EcoSphere OS",
-    description: "An open-source operating system concept designed for sustainable hardware, focusing on extreme power efficiency and modularity.",
-    tags: ["C++", "Kernel", "Low-level", "UI/UX"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/eco/800/600"
+    title: "Nagedy Portfolio (Current)",
+    description: "High-end responsive portfolio with animations, project showcase, and experience timeline.",
+    tags: ["React", "TypeScript", "Vite", "Tailwind"],
+    link: "https://portoflio-lime.vercel.app",
+    github: "https://github.com/mostafanagedy/portoflio",
+    image: "https://opengraph.githubassets.com/1/mostafanagedy/portoflio"
   }
 ];
 
