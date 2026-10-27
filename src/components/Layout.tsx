@@ -13,26 +13,26 @@ import {
   Sun,
   User,
   X,
-} from "lucide-react";
-import React from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { ChatBot } from "./ChatBot";
+} from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { ChatBot } from './ChatBot';
+import { SkipToContent } from '@/shared/components/SkipToContent';
 
 const PAGE_FLOW = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: User },
-  { name: "Skills", href: "/skills", icon: Code2 },
-  { name: "Experience", href: "/experience", icon: Briefcase },
-  { name: "Projects", href: "/projects", icon: Layers },
-  { name: "Certificates", href: "/certificates", icon: Award },
-  { name: "Contact", href: "/contact", icon: Mail },
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'About', href: '/about', icon: User },
+  { name: 'Skills', href: '/skills', icon: Code2 },
+  { name: 'Experience', href: '/experience', icon: Briefcase },
+  { name: 'Projects', href: '/projects', icon: Layers },
+  { name: 'Certificates', href: '/certificates', icon: Award },
+  { name: 'Contact', href: '/contact', icon: Mail },
 ];
 
 const PAGE_SLIDE_VARIANTS = {
   enter: (direction: number) => ({
-    x: direction >= 0 ? "4%" : "-4%",
+    x: direction >= 0 ? '4%' : '-4%',
     opacity: 0,
     scale: 0.99,
   }),
@@ -46,7 +46,7 @@ const PAGE_SLIDE_VARIANTS = {
     },
   },
   exit: (direction: number) => ({
-    x: direction >= 0 ? "-3%" : "3%",
+    x: direction >= 0 ? '-3%' : '3%',
     opacity: 0,
     scale: 0.99,
     transition: {
@@ -54,187 +54,34 @@ const PAGE_SLIDE_VARIANTS = {
       ease: [0.4, 0, 1, 1],
     },
   }),
-};
+} as unknown as import('motion/react').Variants;
 
-// ── Page Loader ────────────────────────────────────────────────────────────
-const PageLoader = ({ pageName }: { pageName: string }) => (
-  <motion.div
-    key="page-loader"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.18, ease: 'easeInOut' }}
-    className="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center"
-  >
-    {/* Backdrop */}
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-white/60 dark:bg-slate-950/70 backdrop-blur-sm"
-    />
-
-    {/* Center Card */}
-    <motion.div
-      initial={{ scale: 0.88, opacity: 0, y: 12 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
-      exit={{ scale: 0.92, opacity: 0, y: -8 }}
-      transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="relative flex flex-col items-center gap-4 px-10 py-8 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-white/10 shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-xl"
-    >
-      {/* Spinner */}
-      <div className="relative w-10 h-10">
-        <motion.span
-          className="absolute inset-0 rounded-full border-2 border-primary/20"
-        />
-        <motion.span
-          className="absolute inset-0 rounded-full border-2 border-transparent border-t-primary"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }}
-        />
-        <motion.span
-          className="absolute inset-[6px] rounded-full border-2 border-transparent border-t-primary/40"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 1.1, repeat: Infinity, ease: 'linear' }}
-        />
-      </div>
-
-      {/* Page Name */}
-      <motion.p
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.08 }}
-        className="text-sm font-semibold text-slate-700 dark:text-slate-300 tracking-wide"
-      >
-        {pageName}
-      </motion.p>
-
-      {/* Progress Bar */}
-      <motion.div className="w-24 h-0.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-          initial={{ x: '-100%' }}
-          animate={{ x: '0%' }}
-          transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-        />
-      </motion.div>
-    </motion.div>
-  </motion.div>
-);
-
-const CustomCursor = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const reducedMotionQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-    const pointerFineQuery = window.matchMedia(
-      "(hover: hover) and (pointer: fine)",
-    );
-    const updateReducedMotion = () =>
-      setReducedMotion(reducedMotionQuery.matches);
-    updateReducedMotion();
-    reducedMotionQuery.addEventListener("change", updateReducedMotion);
-
-    if (!pointerFineQuery.matches) {
-      return () => {
-        reducedMotionQuery.removeEventListener("change", updateReducedMotion);
-      };
-    }
-
-    const handlePointerMove = (e: PointerEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      setIsClicking(e.buttons > 0);
-      if (!isVisible) setIsVisible(true);
-
-      const target = e.target as HTMLElement;
-      const interactiveTags = ["BUTTON", "A", "INPUT", "TEXTAREA", "SELECT"];
-      setIsHovering(
-        interactiveTags.includes(target.tagName) ||
-          Boolean(target.closest("button")) ||
-          Boolean(target.closest("a")) ||
-          target.classList.contains("interactive"),
-      );
-    };
-
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-
-    return () => {
-      reducedMotionQuery.removeEventListener("change", updateReducedMotion);
-      window.removeEventListener("pointermove", handlePointerMove);
-    };
-  }, [isVisible]);
-
-  if (!isVisible) return null;
-
-  return (
-    <motion.div
-      className="fixed top-0 left-0 z-[9999] hidden pointer-events-none md:block will-change-transform"
-      animate={{
-        x: mousePos.x - 16,
-        y: mousePos.y - 16,
-        scale: isClicking ? 0.8 : isHovering ? 1.3 : 1,
-        rotate: isHovering ? 15 : 0,
-        opacity: isHovering ? 0.7 : 1,
-      }}
-      transition={
-        reducedMotion
-          ? { duration: 0.08 }
-          : { type: "tween", duration: 0.14, ease: "easeOut" }
-      }
-    >
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 128 128"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ filter: isHovering ? 'drop-shadow(0 0 6px rgba(37,99,235,0.8))' : 'drop-shadow(0 2px 4px rgba(37,99,235,0.4))' }}
-      >
-        <g fill="#2563EB">
-          <path d="M18 22 L64 10 L64 84 Q64 87 62 89 L34 114 Q32.5 115.5 31 115.5 Q28.5 115.5 28.5 112.5 L28.5 46 L18 35 Z" />
-          <path d="M74 22 L102 12 L112 22 L112 84 Q112 86.5 110.5 88.5 L82 116 L74 123 Z" />
-          <rect x="66" y="40" width="8" height="22" rx="2" transform="skewX(-15)" fill="#60A5FA" />
-        </g>
-      </svg>
-    </motion.div>
-  );
-};
-
-const Navbar = ({
-  theme,
-  toggleTheme,
-}: {
-  theme: string;
-  toggleTheme: () => void;
-}) => {
+const Navbar = ({ theme, toggleTheme }: { theme: string; toggleTheme: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    requestAnimationFrame(() => {
+      setIsMobileMenuOpen(false);
+    });
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        theme === "light"
-          ? "border-b border-slate-200 bg-slate-100/95 py-2.5 sm:py-3"
+        theme === 'light'
+          ? 'border-b border-slate-200 bg-slate-100/95 py-2.5 sm:py-3'
           : isScrolled
-            ? "glass border-b border-slate-200/50 py-3 sm:py-4 dark:border-white/5"
-            : "bg-transparent py-4 sm:py-6"
+            ? 'glass border-b border-slate-200/50 py-3 sm:py-4 dark:border-white/5'
+            : 'bg-transparent py-4 sm:py-6'
       }`}
     >
       <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -253,11 +100,7 @@ const Navbar = ({
             decoding="async"
           />
           <img
-            src={
-              theme === "dark"
-                ? "/brand/logo-wordmark-light.svg"
-                : "/brand/logo-wordmark.svg"
-            }
+            src={theme === 'dark' ? '/brand/logo-wordmark-light.svg' : '/brand/logo-wordmark.svg'}
             alt="Nagedy wordmark"
             width={48}
             height={48}
@@ -278,8 +121,8 @@ const Navbar = ({
               className={({ isActive }) =>
                 `flex items-center gap-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "text-primary"
-                    : "text-slate-600 hover:text-primary dark:text-slate-400"
+                    ? 'text-primary'
+                    : 'text-slate-600 hover:text-primary dark:text-slate-400'
                 }`
               }
             >
@@ -291,13 +134,9 @@ const Navbar = ({
           <button
             onClick={toggleTheme}
             className="glass rounded-xl p-2 transition-all hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === "dark" ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
+            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
 
           <Link
@@ -315,13 +154,9 @@ const Navbar = ({
             type="button"
             onClick={toggleTheme}
             className="relative z-[70] rounded-xl border border-slate-300/70 bg-slate-100 p-2 text-slate-700 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-white/10 dark:bg-slate-900/60 dark:text-white"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === "dark" ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
+            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
           <button
             type="button"
@@ -354,8 +189,8 @@ const Navbar = ({
                     className={({ isActive }) =>
                       `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold transition-colors ${
                         isActive
-                          ? "border border-primary/20 bg-white/10 text-primary"
-                          : "text-slate-100 hover:bg-white/5"
+                          ? 'border border-primary/20 bg-white/10 text-primary'
+                          : 'text-slate-100 hover:bg-white/5'
                       }`
                     }
                   >
@@ -380,27 +215,25 @@ const Navbar = ({
   );
 };
 
-export const Layout = ({
-  theme,
-  toggleTheme,
-}: {
-  theme: string;
-  toggleTheme: () => void;
-}) => {
+export const Layout = ({ theme, toggleTheme }: { theme: string; toggleTheme: () => void }) => {
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname === '/';
   const [scrollProgress, setScrollProgress] = useState(0);
   const currentPageIndex = useMemo(
-    () => Math.max(PAGE_FLOW.findIndex((page) => page.href === location.pathname), 0),
-    [location.pathname],
+    () =>
+      Math.max(
+        PAGE_FLOW.findIndex((page) => page.href === location.pathname),
+        0
+      ),
+    [location.pathname]
   );
   const previousPageIndexRef = useRef(currentPageIndex);
   const [pageDirection, setPageDirection] = useState(1);
 
   useEffect(() => {
     if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !window.matchMedia('(hover: hover) and (pointer: fine)').matches
     ) {
       return;
     }
@@ -409,8 +242,8 @@ export const Layout = ({
 
     const resetActive = () => {
       if (!activeEl) return;
-      activeEl.style.transform = "";
-      activeEl.style.willChange = "";
+      activeEl.style.transform = '';
+      activeEl.style.willChange = '';
       activeEl = null;
     };
 
@@ -422,9 +255,8 @@ export const Layout = ({
         resetActive();
         activeEl = nextEl;
         if (activeEl) {
-          activeEl.style.transition =
-            "transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-          activeEl.style.willChange = "transform";
+          activeEl.style.transition = 'transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1)';
+          activeEl.style.willChange = 'transform';
         }
       }
 
@@ -438,12 +270,12 @@ export const Layout = ({
       activeEl.style.transform = `translate(${moveX}px, ${moveY}px)`;
     };
 
-    window.addEventListener("pointermove", handleMove, { passive: true });
-    window.addEventListener("blur", resetActive);
+    window.addEventListener('pointermove', handleMove, { passive: true });
+    window.addEventListener('blur', resetActive);
 
     return () => {
-      window.removeEventListener("pointermove", handleMove);
-      window.removeEventListener("blur", resetActive);
+      window.removeEventListener('pointermove', handleMove);
+      window.removeEventListener('blur', resetActive);
       resetActive();
     };
   }, [location.pathname]);
@@ -451,8 +283,7 @@ export const Layout = ({
   useEffect(() => {
     const updateProgress = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
 
       if (scrollHeight <= 0) {
         setScrollProgress(0);
@@ -463,12 +294,12 @@ export const Layout = ({
     };
 
     updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
 
     return () => {
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
+      window.removeEventListener('scroll', updateProgress);
+      window.removeEventListener('resize', updateProgress);
     };
   }, [location.pathname]);
 
@@ -487,34 +318,20 @@ export const Layout = ({
     previousPageIndexRef.current = currentPageIndex;
   }, [currentPageIndex]);
 
-  const previousPage =
-    PAGE_FLOW[(currentPageIndex - 1 + PAGE_FLOW.length) % PAGE_FLOW.length];
-  const nextPage = PAGE_FLOW[(currentPageIndex + 1) % PAGE_FLOW.length];
-  const currentPage = PAGE_FLOW[currentPageIndex];
-  const [isNavigating, setIsNavigating] = useState(false);
-  const loaderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Show loader briefly on every route change
-  useEffect(() => {
-    setIsNavigating(true);
-    if (loaderTimerRef.current) clearTimeout(loaderTimerRef.current);
-    loaderTimerRef.current = setTimeout(() => setIsNavigating(false), 500);
-    return () => {
-      if (loaderTimerRef.current) clearTimeout(loaderTimerRef.current);
-    };
-  }, [location.pathname]);
+  const previousPage = PAGE_FLOW[(currentPageIndex - 1 + PAGE_FLOW.length) % PAGE_FLOW.length]!;
+  const nextPage = PAGE_FLOW[(currentPageIndex + 1) % PAGE_FLOW.length]!;
 
   return (
     <div className="min-h-screen">
+      <SkipToContent />
       <div className="pointer-events-none fixed top-0 left-0 right-0 z-[120] h-1">
         <motion.div
           className="h-full bg-gradient-to-r from-cyan-400 via-primary to-blue-500 shadow-[0_0_14px_rgba(37,99,235,0.55)]"
           animate={{ width: `${scrollProgress}%` }}
-          transition={{ duration: 0.15, ease: "easeOut" }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
         />
       </div>
 
-      <CustomCursor />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
 
       <AnimatePresence>
@@ -541,11 +358,6 @@ export const Layout = ({
 
       <ChatBot />
 
-      {/* Page Transition Loader */}
-      <AnimatePresence>
-        {isNavigating && <PageLoader pageName={currentPage.name} />}
-      </AnimatePresence>
-
       <main className="relative overflow-x-clip pt-16 sm:pt-20">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-primary/[0.06] via-primary/[0.03] to-transparent dark:from-white/[0.04] dark:via-white/[0.015]" />
         <div className="relative z-10">
@@ -565,7 +377,7 @@ export const Layout = ({
         </div>
       </main>
 
-      <div className="fixed bottom-5 left-1/2 z-[70] w-[min(92vw,36rem)] -translate-x-1/2 md:bottom-7">
+      <div className="fixed bottom-5 left-1/2 z-[70] w-[min(92vw,36rem)] -translate-x-1/2 md:hidden lg:hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -573,7 +385,6 @@ export const Layout = ({
           className="glass rounded-2xl border border-slate-200/70 px-3 py-2.5 shadow-[0_18px_50px_rgba(15,23,42,0.14)] dark:border-white/10 dark:shadow-[0_18px_50px_rgba(2,6,23,0.4)]"
         >
           <div className="flex items-center gap-2">
-
             {/* Prev Button */}
             <Link
               to={previousPage.href}
@@ -607,9 +418,13 @@ export const Layout = ({
                           : 'border-slate-200/80 bg-white/60 hover:border-primary/40 hover:bg-primary/5 dark:border-white/10 dark:bg-slate-900/60 dark:hover:border-primary/40'
                       }`}
                     >
-                      <Icon className={`h-3.5 w-3.5 shrink-0 transition-colors ${
-                        isActive ? 'text-white ml-2.5' : 'text-slate-500 dark:text-slate-400 group-hover:text-primary'
-                      }`} />
+                      <Icon
+                        className={`h-3.5 w-3.5 shrink-0 transition-colors ${
+                          isActive
+                            ? 'text-white ml-2.5'
+                            : 'text-slate-500 dark:text-slate-400 group-hover:text-primary'
+                        }`}
+                      />
                       <AnimatePresence>
                         {isActive && (
                           <motion.span
@@ -644,13 +459,12 @@ export const Layout = ({
             >
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-
           </div>
         </motion.div>
       </div>
 
       <footer className="border-t border-white/5 py-10 md:py-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-center">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:px-6 pr-20 sm:pr-24 md:pr-28 md:flex-row md:items-center">
           <p className="text-sm text-slate-500">
             © {new Date().getFullYear()} NAG-DEY. All rights reserved.
           </p>

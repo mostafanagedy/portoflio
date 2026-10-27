@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Quote, Star, Send, MessageSquare, ShieldCheck, Sparkles } from 'lucide-react';
+import { useState, FormEvent } from 'react';
+import { motion } from 'motion/react';
+import { Quote, Star, Send, MessageSquare, ShieldCheck } from 'lucide-react';
 import { RECOMMENDATIONS, Recommendation } from '../data';
 
 export const Recommendations = () => {
@@ -9,19 +9,21 @@ export const Recommendations = () => {
     name: '',
     role: '',
     company: '',
-    content: ''
+    content: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const inputClass = 'w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/60 px-5 py-4 text-slate-900 dark:text-white transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none';
-  const labelClass = 'ml-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-600 dark:text-slate-400';
+  const inputClass =
+    'w-full rounded-2xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/60 px-5 py-4 text-slate-900 dark:text-white transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none';
+  const labelClass =
+    'ml-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-600 dark:text-slate-400';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.content.trim()) return;
 
     setIsSubmitting(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       const newRec: Recommendation = {
@@ -30,7 +32,7 @@ export const Recommendations = () => {
         role: formData.role.trim(),
         company: formData.company.trim(),
         content: formData.content.trim(),
-        image: `https://picsum.photos/seed/${formData.name}/200/200`
+        image: `https://picsum.photos/seed/${formData.name}/200/200`,
       };
       setVisitorRecs([newRec, ...visitorRecs]);
       setFormData({ name: '', role: '', company: '', content: '' });
@@ -48,16 +50,18 @@ export const Recommendations = () => {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-14 text-center md:mb-16">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="glass mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2"
           >
             <Star className="w-4 h-4 text-primary" />
-            <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Recommendations</span>
+            <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary">
+              Recommendations
+            </span>
           </motion.div>
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -97,15 +101,15 @@ export const Recommendations = () => {
                   Verified
                 </span>
               </div>
-              
+
               <p className="flex-grow text-sm leading-relaxed text-slate-700 dark:text-slate-300">
                 {rec.content}
               </p>
-              
+
               <div className="mt-6 flex items-center gap-4 border-t border-slate-200/70 pt-5 dark:border-white/10">
-                <img 
-                  src={rec.image} 
-                  alt={rec.name} 
+                <img
+                  src={rec.image}
+                  alt={rec.name}
                   loading="lazy"
                   decoding="async"
                   width={80}
@@ -115,7 +119,9 @@ export const Recommendations = () => {
                   referrerPolicy="no-referrer"
                 />
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-950 dark:text-white">{rec.name}</h4>
+                  <h4 className="text-sm font-semibold text-slate-950 dark:text-white">
+                    {rec.name}
+                  </h4>
                   <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-primary/80">
                     {rec.role} {rec.company ? `@ ${rec.company}` : ''}
                   </p>
@@ -138,13 +144,20 @@ export const Recommendations = () => {
                 <MessageSquare className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-2xl">Share a Professional Recommendation</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Your feedback helps recruiters and partners understand the value of our collaboration.</p>
+                <h3 className="text-xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-2xl">
+                  Share a Professional Recommendation
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Your feedback helps recruiters and partners understand the value of our
+                  collaboration.
+                </p>
               </div>
             </div>
             <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 dark:border-emerald-500/20 dark:bg-emerald-900/20">
               <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">Respectful and verified feedback only</span>
+              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                Respectful and verified feedback only
+              </span>
             </div>
           </div>
 
@@ -156,7 +169,7 @@ export const Recommendations = () => {
                   type="text"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className={inputClass}
                   placeholder="e.g. John Doe"
                 />
@@ -166,7 +179,7 @@ export const Recommendations = () => {
                 <input
                   type="text"
                   value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className={inputClass}
                   placeholder="e.g. Engineering Manager"
                 />
@@ -192,7 +205,7 @@ export const Recommendations = () => {
                 maxLength={600}
                 rows={5}
                 value={formData.content}
-                onChange={(e) => setFormData({...formData, content: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 className={`${inputClass} resize-none`}
                 placeholder="Describe your experience working with Mostafa, results delivered, and strengths you observed."
               />
@@ -200,12 +213,12 @@ export const Recommendations = () => {
                 Tip: specific outcomes make testimonials stronger.
               </p>
             </div>
-              <button 
-                type="submit"
-                disabled={isSubmitting || !formData.name.trim() || !formData.content.trim()}
-                data-magnetic="true"
-                className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-5 font-medium text-white transition-all hover:bg-primary/90 disabled:opacity-50"
-              >
+            <button
+              type="submit"
+              disabled={isSubmitting || !formData.name.trim() || !formData.content.trim()}
+              data-magnetic="true"
+              className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-5 font-medium text-white transition-all hover:bg-primary/90 disabled:opacity-50"
+            >
               {isSubmitting ? (
                 <>
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/80 border-t-transparent" />
@@ -223,4 +236,3 @@ export const Recommendations = () => {
     </section>
   );
 };
-

@@ -1,46 +1,22 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Send, Globe, Github, MessageSquare, Mail,
-  CheckCircle, AlertCircle, Loader2, MapPin, Clock,
+  Send,
+  Globe,
+  Github,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  MapPin,
+  Clock,
 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { SectionHeading } from '../components/SectionHeading';
+import { FloatingParticle } from '../components/FloatingParticle';
 
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
 const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
-
-const SectionHeading = ({ title, subtitle, icon: Icon }: { title: string; subtitle: string; icon: any }) => (
-  <div className="mb-12 md:mb-16 text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4"
-    >
-      <Icon className="w-4 h-4 text-primary" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">{subtitle}</span>
-    </motion.div>
-    <motion.h2
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.1 }}
-      className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
-    >
-      {title}
-    </motion.h2>
-  </div>
-);
-
-const FloatingParticle = ({ delay, duration, x, y }: { delay: number; duration: number; x: string; y: string }) => (
-  <motion.div
-    className="absolute w-2 h-2 rounded-full bg-primary/30 pointer-events-none"
-    style={{ left: x, top: y }}
-    animate={{ y: [0, -30, 0], opacity: [0.3, 0.8, 0.3], scale: [1, 1.5, 1] }}
-    transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
-  />
-);
+const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
 
 const INFO_CARDS = [
   {
@@ -95,7 +71,12 @@ export const Contact = () => {
     if (!formRef.current || status === 'loading') return;
     setStatus('loading');
     try {
-      await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY);
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        EMAILJS_PUBLIC_KEY
+      );
       setStatus('success');
       formRef.current.reset();
     } catch {
@@ -105,7 +86,6 @@ export const Contact = () => {
 
   return (
     <section className="relative overflow-hidden py-16 md:py-24">
-
       {/* Animated Background Blobs */}
       <motion.div
         className="absolute -top-24 -left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none"
@@ -124,9 +104,9 @@ export const Contact = () => {
       />
 
       {/* Floating Particles */}
-      <FloatingParticle delay={0}   duration={6}   x="8%"  y="15%" />
-      <FloatingParticle delay={1}   duration={7}   x="88%" y="25%" />
-      <FloatingParticle delay={2}   duration={8}   x="20%" y="75%" />
+      <FloatingParticle delay={0} duration={6} x="8%" y="15%" />
+      <FloatingParticle delay={1} duration={7} x="88%" y="25%" />
+      <FloatingParticle delay={2} duration={8} x="20%" y="75%" />
       <FloatingParticle delay={1.5} duration={6.5} x="75%" y="80%" />
       <FloatingParticle delay={0.5} duration={7.5} x="50%" y="10%" />
 
@@ -134,7 +114,6 @@ export const Contact = () => {
         <SectionHeading title="Get In Touch" subtitle="Contact" icon={Send} />
 
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 lg:gap-14">
-
           {/* ── Left — Info ── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -150,8 +129,7 @@ export const Contact = () => {
                 transition={{ delay: 0.1 }}
                 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-snug mb-3"
               >
-                Let&apos;s build something{' '}
-                <span className="text-primary">polished</span> and{' '}
+                Let&apos;s build something <span className="text-primary">polished</span> and{' '}
                 <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                   useful.
                 </span>
@@ -163,7 +141,8 @@ export const Contact = () => {
                 transition={{ delay: 0.2 }}
                 className="text-slate-600 dark:text-slate-400 leading-relaxed"
               >
-                For collaborations, freelance work, or portfolio feedback — fill the form and I&apos;ll reply within 24 hours.
+                For collaborations, freelance work, or portfolio feedback — fill the form and
+                I&apos;ll reply within 24 hours.
               </motion.p>
             </div>
 
@@ -182,10 +161,12 @@ export const Contact = () => {
                   transition={{ delay: i * 0.08, type: 'spring', stiffness: 120, damping: 20 }}
                   whileHover={{ y: -6, scale: 1.02 }}
                   style={{ transformStyle: 'preserve-3d' }}
-                  className="group relative rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-slate-950/60 shadow-[0_4px_24px_rgba(15,23,42,0.07)] backdrop-blur-xl overflow-hidden p-4 cursor-pointer"
+                  className="group relative rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-slate-950/60 shadow-[0_4px_24px_rgba(15,23,42,0.07)] backdrop-blur-xl overflow-hidden p-4"
                 >
                   {/* Gradient Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${card.accent} opacity-80 group-hover:opacity-100 transition-opacity`} />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${card.accent} opacity-80 group-hover:opacity-100 transition-opacity`}
+                  />
 
                   {/* Corner Glow */}
                   <motion.div
@@ -203,8 +184,12 @@ export const Contact = () => {
                     >
                       <card.icon className="w-4 h-4 text-white" />
                     </motion.div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">{card.label}</p>
-                    <p className="text-xs font-semibold text-slate-800 dark:text-white group-hover:text-primary transition-colors leading-snug">{card.value}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">
+                      {card.label}
+                    </p>
+                    <p className="text-xs font-semibold text-slate-800 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                      {card.value}
+                    </p>
                   </div>
                 </motion.a>
               ))}
@@ -246,7 +231,9 @@ export const Contact = () => {
                     >
                       <CheckCircle className="w-8 h-8 text-emerald-500" />
                     </motion.div>
-                    <h4 className="text-xl font-bold text-slate-950 dark:text-white">Message Sent!</h4>
+                    <h4 className="text-xl font-bold text-slate-950 dark:text-white">
+                      Message Sent!
+                    </h4>
                     <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed">
                       Thanks for reaching out. I&apos;ll get back to you within 24 hours.
                     </p>
@@ -270,29 +257,72 @@ export const Contact = () => {
                   >
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label htmlFor="contact-name" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <label
+                          htmlFor="contact-name"
+                          className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider"
+                        >
                           Name <span className="text-primary">*</span>
                         </label>
-                        <input id="contact-name" type="text" name="from_name" autoComplete="name" required className={inputClass} placeholder="Your name" />
+                        <input
+                          id="contact-name"
+                          type="text"
+                          name="from_name"
+                          autoComplete="name"
+                          required
+                          className={inputClass}
+                          placeholder="Your name"
+                        />
                       </div>
                       <div className="space-y-1.5">
-                        <label htmlFor="contact-email" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <label
+                          htmlFor="contact-email"
+                          className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider"
+                        >
                           Email <span className="text-primary">*</span>
                         </label>
-                        <input id="contact-email" type="email" name="from_email" autoComplete="email" required className={inputClass} placeholder="your@email.com" />
+                        <input
+                          id="contact-email"
+                          type="email"
+                          name="from_email"
+                          autoComplete="email"
+                          required
+                          className={inputClass}
+                          placeholder="your@email.com"
+                        />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label htmlFor="contact-subject" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Subject</label>
-                      <input id="contact-subject" type="text" name="subject" className={inputClass} placeholder="Project inquiry" />
+                      <label
+                        htmlFor="contact-subject"
+                        className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Subject
+                      </label>
+                      <input
+                        id="contact-subject"
+                        type="text"
+                        name="subject"
+                        className={inputClass}
+                        placeholder="Project inquiry"
+                      />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label htmlFor="contact-message" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                      <label
+                        htmlFor="contact-message"
+                        className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider"
+                      >
                         Message <span className="text-primary">*</span>
                       </label>
-                      <textarea id="contact-message" name="message" rows={4} required className={`${inputClass} resize-none`} placeholder="Tell me about the project, timeline, and goals..." />
+                      <textarea
+                        id="contact-message"
+                        name="message"
+                        rows={4}
+                        required
+                        className={`${inputClass} resize-none`}
+                        placeholder="Tell me about the project, timeline, and goals..."
+                      />
                     </div>
 
                     {status === 'error' && (
@@ -315,9 +345,13 @@ export const Contact = () => {
                       className="w-full py-3.5 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 shadow-[0_4px_20px_rgba(37,99,235,0.35)] hover:shadow-[0_4px_28px_rgba(37,99,235,0.5)]"
                     >
                       {status === 'loading' ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" /> Sending…
+                        </>
                       ) : (
-                        <><Send className="w-4 h-4" /> Send Message</>
+                        <>
+                          <Send className="w-4 h-4" /> Send Message
+                        </>
                       )}
                     </button>
                   </motion.form>
@@ -325,7 +359,6 @@ export const Contact = () => {
               </AnimatePresence>
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

@@ -1,42 +1,26 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { type Key, type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Layers, Github, ExternalLink as ExternalLinkIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Layers,
+  Github,
+  ExternalLink as ExternalLinkIcon,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { PROJECTS, type Project } from '../data';
 import { Skeleton } from '../components/Skeleton';
+import { SectionHeading } from '../components/SectionHeading';
 
 const ITEMS_PER_PAGE = 4;
 
-const SectionHeading = ({ title, subtitle, icon: Icon }: { title: string; subtitle: string; icon: any }) => (
-  <div className="mb-12 md:mb-16 text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4"
-    >
-      <Icon className="w-4 h-4 text-primary" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">{subtitle}</span>
-    </motion.div>
-    <motion.h2
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.1 }}
-      className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
-    >
-      {title}
-    </motion.h2>
-  </div>
-);
-
-const ProjectCard = ({ project, index }: { project: Project; index: number; key?: React.Key }) => {
+const ProjectCard = ({ project, index }: { project: Project; index: number; key?: Key }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0, glowX: 50, glowY: 50 });
   const hasPublicLinks = Boolean(project.link || project.github);
 
-  const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleMove = (event: MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width;
     const py = (event.clientY - rect.top) / rect.height;
@@ -52,7 +36,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number; key?
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "50px" }}
+      viewport={{ once: true, margin: '50px' }}
       transition={{ delay: index * 0.1 }}
       className="group relative rounded-3xl overflow-hidden glass border-slate-200/50 dark:border-white/5 hover:border-primary/30 transition-all will-change-transform"
       onMouseEnter={() => setIsHovering(true)}
@@ -73,7 +57,9 @@ const ProjectCard = ({ project, index }: { project: Project; index: number; key?
         }}
       />
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-900/20">
-        {!isImageLoaded && !imageError && <Skeleton className="absolute inset-0 w-full h-full z-10" />}
+        {!isImageLoaded && !imageError && (
+          <Skeleton className="absolute inset-0 w-full h-full z-10" />
+        )}
         {!imageError ? (
           <img
             src={project.image}
@@ -102,7 +88,10 @@ const ProjectCard = ({ project, index }: { project: Project; index: number; key?
         <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
           <div className="flex gap-2">
             {project.tags.slice(0, 2).map((tag) => (
-              <span key={tag} className="px-3 py-1 rounded-lg bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-[10px] font-semibold uppercase tracking-wider text-slate-900 dark:text-white border border-slate-200/50 dark:border-white/10">
+              <span
+                key={tag}
+                className="px-3 py-1 rounded-lg bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-[10px] font-semibold uppercase tracking-wider text-slate-900 dark:text-white border border-slate-200/50 dark:border-white/10"
+              >
                 {tag}
               </span>
             ))}
@@ -110,16 +99,30 @@ const ProjectCard = ({ project, index }: { project: Project; index: number; key?
         </div>
       </div>
       <div className="p-6 sm:p-8">
-        <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors text-blue-950 dark:text-white">{project.title}</h3>
-        <p className="text-sm text-blue-700/80 dark:text-slate-400 mb-6 line-clamp-2">{project.description}</p>
+        <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors text-blue-950 dark:text-white">
+          {project.title}
+        </h3>
+        <p className="text-sm text-blue-700/80 dark:text-slate-400 mb-6 line-clamp-2">
+          {project.description}
+        </p>
         <div className="flex items-center gap-4 flex-wrap">
           {project.link && (
-            <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs font-semibold text-primary hover:underline">
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+            >
               Live Demo <ExternalLinkIcon className="w-3 h-3" />
             </a>
           )}
           {project.github && (
-            <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs font-semibold text-blue-500 dark:text-slate-400 hover:text-primary transition-colors">
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs font-semibold text-blue-500 dark:text-slate-400 hover:text-primary transition-colors"
+            >
               Source Code <Github className="w-3 h-3" />
             </a>
           )}
@@ -140,7 +143,10 @@ export const Projects = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [page, setPage] = useState(1);
 
-  const availableTags = ['all', ...Array.from(new Set(PROJECTS.flatMap((project) => project.tags)))];
+  const availableTags = [
+    'all',
+    ...Array.from(new Set(PROJECTS.flatMap((project) => project.tags))),
+  ];
 
   const filteredProjects = useMemo(() => {
     return [...PROJECTS]
@@ -164,14 +170,17 @@ export const Projects = () => {
 
   const totalPages = Math.max(1, Math.ceil(filteredProjects.length / ITEMS_PER_PAGE));
   const currentPage = Math.min(page, totalPages);
-  const paginatedProjects = filteredProjects.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const paginatedProjects = filteredProjects.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   useEffect(() => {
-    setPage(1);
+    requestAnimationFrame(() => setPage(1));
   }, [query, tagFilter, sortBy]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(totalPages);
+    if (page > totalPages) requestAnimationFrame(() => setPage(totalPages));
   }, [page, totalPages]);
 
   return (
@@ -204,9 +213,15 @@ export const Projects = () => {
               onChange={(e) => setSortBy(e.target.value)}
               className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-primary/50"
             >
-              <option value="featured" className="bg-slate-900 text-slate-100">Featured First</option>
-              <option value="title-asc" className="bg-slate-900 text-slate-100">Title A-Z</option>
-              <option value="title-desc" className="bg-slate-900 text-slate-100">Title Z-A</option>
+              <option value="featured" className="bg-slate-900 text-slate-100">
+                Featured First
+              </option>
+              <option value="title-asc" className="bg-slate-900 text-slate-100">
+                Title A-Z
+              </option>
+              <option value="title-desc" className="bg-slate-900 text-slate-100">
+                Title Z-A
+              </option>
             </select>
           </div>
           <p className="mt-3 text-xs text-slate-400">

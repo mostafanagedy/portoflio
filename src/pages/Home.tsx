@@ -1,30 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
-import {
-  Github,
-  ArrowRight,
-  Globe,
-  Mail,
-  Download,
-  MapPin,
-  Circle,
-} from 'lucide-react';
+import { Github, ArrowRight, Globe, Mail, MapPin, Circle } from 'lucide-react';
 import { Skeleton } from '../components/Skeleton';
-import { CERTIFICATES, PROJECTS } from '../data';
 import { Recommendations } from '../components/Recommendations';
 
 const ROLES = [
-  'Frontend Developer',
-  'React Specialist',
-  'UI Engineer',
-  'TypeScript Developer',
+  'Senior Full-Stack Engineer',
+  'Frontend Architect',
+  'TypeScript Specialist',
+  'Performance Engineer',
 ];
 
 const STATS = [
-  { value: PROJECTS.length + '+', label: 'Projects Shipped' },
-  { value: CERTIFICATES.length + '+', label: 'Certifications' },
-  { value: '2+', label: 'Years Building' },
+  { value: '99+', label: 'Lighthouse Score', color: 'text-emerald-500' },
+  { value: '10k+', label: 'Monthly Active Users', color: 'text-blue-500' },
+  { value: '40%', label: 'Faster Page Loads', color: 'text-primary' },
+  { value: '5+', label: 'Production Systems', color: 'text-violet-500' },
 ];
 
 export const Home = () => {
@@ -89,10 +81,8 @@ export const Home = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-12 md:py-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-
             {/* ── Left Column ── */}
             <div className="flex flex-col">
-
               {/* Status Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -105,7 +95,7 @@ export const Home = () => {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
                 <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 tracking-widest uppercase">
-                  Available for work
+                  Senior Full-Stack Engineer
                 </span>
               </motion.div>
 
@@ -126,9 +116,9 @@ export const Home = () => {
                 transition={{ duration: 0.6, delay: 0.15 }}
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.5rem] font-bold leading-[1.05] tracking-tight text-slate-950 dark:text-white mb-4"
               >
-                Building{' '}
+                Architecting{' '}
                 <span className="relative inline-block">
-                  <span className="text-primary">digital</span>
+                  <span className="text-primary">scalable</span>
                   <motion.span
                     className="absolute -bottom-1 left-0 h-px bg-primary/50 block"
                     initial={{ width: 0 }}
@@ -137,9 +127,9 @@ export const Home = () => {
                   />
                 </span>
                 <br />
-                products that
+                production-grade
                 <br />
-                <span className="text-slate-400 dark:text-slate-500">actually work.</span>
+                <span className="text-slate-400 dark:text-slate-500">frontend systems.</span>
               </motion.h1>
 
               {/* Animated Role */}
@@ -173,9 +163,9 @@ export const Home = () => {
                 transition={{ duration: 0.6, delay: 0.45 }}
                 className="text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mb-10"
               >
-                I build React frontends, e-commerce interfaces, and practical
-                Express/Mongo APIs with a strong focus on responsive UI and
-                clean implementation.
+                I design and ship production-grade frontend architectures with React 19, TypeScript,
+                and Tailwind CSS. Focus on Core Web Vitals, accessibility (WCAG 2.1 AA), and
+                scalable systems that serve 10k+ users with sub-200ms response times.
               </motion.p>
 
               {/* CTA Buttons */}
@@ -258,9 +248,7 @@ export const Home = () => {
                 <div className="absolute -inset-6 rounded-3xl border border-primary/8 hidden md:block" />
 
                 <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 aspect-[4/5] shadow-[0_24px_80px_rgba(15,23,42,0.18)] dark:shadow-[0_24px_80px_rgba(2,6,23,0.6)]">
-                  {!isProfileLoaded && (
-                    <Skeleton className="absolute inset-0 w-full h-full z-10" />
-                  )}
+                  {!isProfileLoaded && <Skeleton className="absolute inset-0 w-full h-full z-10" />}
                   <img
                     src="/profile-home.png"
                     alt="Mostafa Nagedy"
@@ -293,7 +281,7 @@ export const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.75 }}
-                className="w-full max-w-[340px] grid grid-cols-3 divide-x divide-slate-200 dark:divide-white/8 border border-slate-200 dark:border-white/8 rounded-xl overflow-hidden bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm"
+                className="w-full max-w-[440px] grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 divide-slate-200 dark:divide-white/8 border border-slate-200 dark:border-white/8 rounded-xl overflow-hidden bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm"
               >
                 {STATS.map((stat, i) => (
                   <motion.div
@@ -313,7 +301,6 @@ export const Home = () => {
                 ))}
               </motion.div>
             </motion.div>
-
           </div>
         </div>
 

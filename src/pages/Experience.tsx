@@ -1,40 +1,19 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Briefcase, Download, CalendarDays, Building2, ChevronRight, MonitorSmartphone, ServerCog, Code2 } from 'lucide-react';
+import {
+  Briefcase,
+  Download,
+  CalendarDays,
+  Building2,
+  ChevronRight,
+  MonitorSmartphone,
+  ServerCog,
+  Code2,
+} from 'lucide-react';
 import { EXPERIENCES } from '../data';
 import type { LucideIcon } from 'lucide-react';
-
-const SectionHeading = ({ title, subtitle, icon: Icon }: { title: string; subtitle: string; icon: any }) => (
-  <div className="mb-12 md:mb-16 text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4"
-    >
-      <Icon className="w-4 h-4 text-primary" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">{subtitle}</span>
-    </motion.div>
-    <motion.h2
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.1 }}
-      className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
-    >
-      {title}
-    </motion.h2>
-  </div>
-);
-
-const FloatingParticle = ({ delay, duration, x, y }: { delay: number; duration: number; x: string; y: string }) => (
-  <motion.div
-    className="absolute w-2 h-2 rounded-full bg-primary/30 pointer-events-none"
-    style={{ left: x, top: y }}
-    animate={{ y: [-18, 18, -18], opacity: [0.35, 0.85, 0.35], scale: [1, 1.45, 1] }}
-    transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
-  />
-);
+import { SectionHeading } from '../components/SectionHeading';
+import { FloatingParticle } from '../components/FloatingParticle';
 
 const EXP_META: { icon: LucideIcon; accent: string; gradient: string; glow: string }[] = [
   {
@@ -57,8 +36,15 @@ const EXP_META: { icon: LucideIcon; accent: string; gradient: string; glow: stri
   },
 ];
 
-const ExperienceCard = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENCES[0]; index: number }) => {
-  const meta = EXP_META[index % EXP_META.length];
+const ExperienceCard = ({
+  exp,
+  index,
+}: {
+  key?: React.Key;
+  exp: (typeof EXPERIENCES)[0];
+  index: number;
+}) => {
+  const meta = EXP_META[index % EXP_META.length]!;
   const Icon = meta.icon;
 
   return (
@@ -72,7 +58,9 @@ const ExperienceCard = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENC
       className="group relative rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-slate-950/60 shadow-[0_8px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl overflow-hidden"
     >
       {/* Gradient Background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${meta.accent} opacity-80 group-hover:opacity-100 transition-opacity`} />
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${meta.accent} opacity-80 group-hover:opacity-100 transition-opacity`}
+      />
 
       {/* Animated Corner Glow */}
       <motion.div
@@ -134,10 +122,17 @@ const ExperienceCard = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENC
   );
 };
 
-const TimelineItem = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENCES[0]; index: number }) => {
+const TimelineItem = ({
+  exp,
+  index,
+}: {
+  key?: React.Key;
+  exp: (typeof EXPERIENCES)[0];
+  index: number;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] });
-  const leftX  = useTransform(scrollYProgress, [0, 0.6], [-30, 0]);
+  const leftX = useTransform(scrollYProgress, [0, 0.6], [-30, 0]);
   const rightX = useTransform(scrollYProgress, [0, 0.6], [30, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [0.3, 1]);
 
@@ -145,7 +140,6 @@ const TimelineItem = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENCES
 
   return (
     <div ref={ref} className="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-8 items-start">
-
       {/* Left */}
       <motion.div style={{ opacity, x: leftX }} className="hidden md:block">
         {isEven ? <ExperienceCard exp={exp} index={index} /> : <div />}
@@ -191,12 +185,14 @@ const TimelineItem = ({ exp, index }: { key?: React.Key; exp: typeof EXPERIENCES
 
 export const Experience = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ['start center', 'end center'] });
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ['start center', 'end center'],
+  });
   const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
     <section className="relative overflow-hidden py-16 md:py-24">
-
       {/* Animated Background Blobs — same as About */}
       <motion.div
         className="absolute -top-24 -left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none"
@@ -215,14 +211,14 @@ export const Experience = () => {
       />
 
       {/* Floating Particles — same as About */}
-      <FloatingParticle delay={0}   duration={6}   x="8%"  y="15%" />
-      <FloatingParticle delay={1}   duration={7}   x="88%" y="25%" />
-      <FloatingParticle delay={2}   duration={8}   x="20%" y="75%" />
+      <FloatingParticle delay={0} duration={6} x="8%" y="15%" />
+      <FloatingParticle delay={1} duration={7} x="88%" y="25%" />
+      <FloatingParticle delay={2} duration={8} x="20%" y="75%" />
       <FloatingParticle delay={1.5} duration={6.5} x="75%" y="80%" />
       <FloatingParticle delay={0.5} duration={7.5} x="50%" y="10%" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
-        <SectionHeading title="Build Journey" subtitle="Experience" icon={Briefcase} />
+        <SectionHeading title="Engineering Journey" subtitle="Experience" icon={Briefcase} />
 
         {/* Resume Download */}
         <motion.div
@@ -253,7 +249,7 @@ export const Experience = () => {
 
           <div className="flex flex-col gap-12 md:gap-16">
             {EXPERIENCES.map((exp, i) => (
-              <TimelineItem key={i} exp={exp} index={i} />
+              <TimelineItem key={`${exp.company}-${exp.period}`} exp={exp} index={i} />
             ))}
           </div>
         </div>

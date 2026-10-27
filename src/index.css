@@ -1,9 +1,9 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, monospace;
-  
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+
   --color-primary: #2563eb;
   --color-secondary: #60a5fa;
 }
@@ -11,26 +11,38 @@
 @layer base {
   body {
     @apply bg-white text-slate-900 antialiased selection:bg-primary/10 selection:text-primary transition-colors duration-300;
-    @media (min-width: 768px) {
-      cursor: none;
-    }
+    cursor: auto;
   }
 
   @media (min-width: 768px) {
-    a, button, input, textarea, select {
-      cursor: none;
+    a,
+    button,
+    input,
+    textarea,
+    select {
+      cursor: auto;
     }
   }
-  
+
   .dark body {
     @apply bg-slate-950 text-slate-200;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-sans font-semibold tracking-tight text-slate-950 transition-colors duration-300;
   }
 
-  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
     @apply text-white;
   }
 
@@ -60,8 +72,6 @@
   scrollbar-width: none;
 }
 
-
-
 @media (max-width: 375px) {
   .hero-shell {
     row-gap: 1.5rem;
@@ -75,5 +85,16 @@
 
   .hero-section .glass {
     backdrop-filter: blur(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

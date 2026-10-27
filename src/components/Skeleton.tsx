@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 
 interface SkeletonProps {
@@ -7,11 +6,11 @@ interface SkeletonProps {
 }
 
 export const Skeleton = ({ className = '', variant = 'rect' }: SkeletonProps) => {
-  const baseClasses = "bg-slate-200 dark:bg-slate-800 relative overflow-hidden";
+  const baseClasses = 'bg-slate-200 dark:bg-slate-800 relative overflow-hidden';
   const variantClasses = {
-    rect: "rounded-lg",
-    circle: "rounded-full",
-    text: "rounded h-4 w-full"
+    rect: 'rounded-lg',
+    circle: 'rounded-full',
+    text: 'rounded h-4 w-full',
   };
 
   return (
@@ -24,7 +23,7 @@ export const Skeleton = ({ className = '', variant = 'rect' }: SkeletonProps) =>
         transition={{
           duration: 1.5,
           repeat: Infinity,
-          ease: "linear",
+          ease: 'linear',
         }}
       />
     </div>

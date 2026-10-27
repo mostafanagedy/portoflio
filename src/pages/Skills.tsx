@@ -23,40 +23,8 @@ import {
   Wind,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { SKILLS } from '../data';
-
-const SectionHeading = ({
-  title,
-  subtitle,
-  icon: Icon,
-}: {
-  title: string;
-  subtitle: string;
-  icon: any;
-}) => (
-  <div className="mb-12 md:mb-16 text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4"
-    >
-      <Icon className="w-4 h-4 text-primary" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {subtitle}
-      </span>
-    </motion.div>
-    <motion.h2
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.1 }}
-      className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
-    >
-      {title}
-    </motion.h2>
-  </div>
-);
+import { SKILL_GROUPS } from '../data';
+import { SectionHeading } from '../components/SectionHeading';
 
 const SKILL_ICON_MAP: Record<string, { icon: LucideIcon; tone: string; level: number }> = {
   React: { icon: Atom, tone: 'text-cyan-400', level: 90 },
@@ -127,8 +95,14 @@ const SkillBadge = ({ skill, delay }: SkillBadgeProps) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 });
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
+    stiffness: 300,
+    damping: 30,
+  });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
+    stiffness: 300,
+    damping: 30,
+  });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -148,7 +122,7 @@ const SkillBadge = ({ skill, delay }: SkillBadgeProps) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "50px" }}
+      viewport={{ once: true, margin: '50px' }}
       transition={{ delay: delay * 0.05, type: 'spring', stiffness: 200 }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
@@ -158,7 +132,7 @@ const SkillBadge = ({ skill, delay }: SkillBadgeProps) => {
         rotateX,
         rotateY,
       }}
-      className="group relative flex items-center gap-3 rounded-2xl bg-slate-700/90 dark:bg-slate-800/90 text-white px-4 py-3.5 shadow-[0_8px_30px_rgba(15,23,42,0.3)] border border-white/10 overflow-hidden cursor-pointer"
+      className="group relative flex items-center gap-3 rounded-2xl bg-slate-700/90 dark:bg-slate-800/90 text-white px-4 py-3.5 shadow-[0_8px_30px_rgba(15,23,42,0.3)] border border-white/10 overflow-hidden"
     >
       {/* Animated Background Gradient */}
       <motion.div
@@ -188,15 +162,23 @@ const SkillBadge = ({ skill, delay }: SkillBadgeProps) => {
           scale: isHovered ? 1.1 : 1,
         }}
         transition={{
-          y: { duration: isHovered ? 0.2 : 4.5 + delay, repeat: isHovered ? 0 : Infinity, ease: 'easeInOut' },
-          rotate: { duration: isHovered ? 0.2 : 4.5 + delay, repeat: isHovered ? 0 : Infinity, ease: 'easeInOut' },
+          y: {
+            duration: isHovered ? 0.2 : 4.5 + delay,
+            repeat: isHovered ? 0 : Infinity,
+            ease: 'easeInOut',
+          },
+          rotate: {
+            duration: isHovered ? 0.2 : 4.5 + delay,
+            repeat: isHovered ? 0 : Infinity,
+            ease: 'easeInOut',
+          },
           scale: { duration: 0.2 },
         }}
         className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 border border-white/20 shadow-inner"
         style={{ transform: 'translateZ(20px)' }}
       >
         <Icon className={`w-5 h-5 ${entry.tone} drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]`} />
-        
+
         {/* Sparkle Effect on Hover */}
         {isHovered && (
           <motion.div
@@ -238,7 +220,17 @@ const SkillBadge = ({ skill, delay }: SkillBadgeProps) => {
   );
 };
 
-const FloatingParticle = ({ delay, duration, x, y }: { delay: number; duration: number; x: string; y: string }) => (
+const FloatingParticle = ({
+  delay,
+  duration,
+  x,
+  y,
+}: {
+  delay: number;
+  duration: number;
+  x: string;
+  y: string;
+}) => (
   <motion.div
     className="absolute w-2 h-2 rounded-full bg-primary/30"
     style={{ left: x, top: y }}
@@ -296,8 +288,8 @@ export const Skills = () => {
         <SectionHeading title="My Expertise" subtitle="Skills" icon={Code2} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 overflow-visible">
-          {SKILLS.map((skillGroup, i) => {
-            const meta = GROUP_META[skillGroup.name] ?? GROUP_META.Frontend;
+          {SKILL_GROUPS.map((skillGroup, i) => {
+            const meta = GROUP_META[skillGroup.name] ?? GROUP_META.Frontend!;
             const GroupIcon = meta.icon;
 
             return (
@@ -305,7 +297,7 @@ export const Skills = () => {
                 key={skillGroup.name}
                 initial={{ opacity: 0, y: 40, rotateX: -15 }}
                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                viewport={{ once: true, margin: "100px" }}
+                viewport={{ once: true, margin: '100px' }}
                 transition={{ delay: i * 0.15, type: 'spring', stiffness: 100, damping: 20 }}
                 whileHover={{ y: -12, scale: 1.02 }}
                 style={{ transformStyle: 'preserve-3d' }}
@@ -345,8 +337,10 @@ export const Skills = () => {
                   }}
                 >
                   {/* Gradient Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${meta.accent} opacity-80 group-hover:opacity-100 transition-opacity`} />
-                  
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${meta.accent} opacity-80 group-hover:opacity-100 transition-opacity`}
+                  />
+
                   {/* Animated Glow */}
                   <motion.div
                     className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/40 blur-3xl"
