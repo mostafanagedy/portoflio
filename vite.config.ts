@@ -11,15 +11,19 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
-      sentryVitePlugin({
-        org: env.VITE_SENTRY_ORG || '',
-        project: env.VITE_SENTRY_PROJECT || '',
-        authToken: env.VITE_SENTRY_AUTH_TOKEN || '',
-        sourcemaps: {
-          assets: './dist/**/*.js',
-          ignore: ['./dist/**/*.js.map'],
-        },
-      }),
+      ...(env.VITE_SENTRY_AUTH_TOKEN
+        ? [
+            sentryVitePlugin({
+              org: env.VITE_SENTRY_ORG || '',
+              project: env.VITE_SENTRY_PROJECT || '',
+              authToken: env.VITE_SENTRY_AUTH_TOKEN,
+              sourcemaps: {
+                assets: './dist/**/*.js',
+                ignore: ['./dist/**/*.js.map'],
+              },
+            }),
+          ]
+        : []),
     ],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
